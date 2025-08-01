@@ -3,7 +3,7 @@ package ivancroce.event_platform.payloads;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public record NewUserDTO(
+public record UserDTO(
         @NotEmpty(message = "The username is mandatory")
         @Size(min = 2, max = 30, message = "The username must be between 2 and 30 characters")
         String username,

@@ -3,7 +3,7 @@ package ivancroce.event_platform.services;
 import ivancroce.event_platform.entities.User;
 import ivancroce.event_platform.exceptions.BadRequestException;
 import ivancroce.event_platform.exceptions.NotFoundException;
-import ivancroce.event_platform.payloads.NewUserDTO;
+import ivancroce.event_platform.payloads.UserDTO;
 import ivancroce.event_platform.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    public User saveUser(NewUserDTO payload) {
+    public User saveUser(UserDTO payload) {
         this.userRepository.findByUsername(payload.username()).ifPresent(employee -> {
             throw new BadRequestException("The username '" + payload.username() + "' is already in use.");
         });

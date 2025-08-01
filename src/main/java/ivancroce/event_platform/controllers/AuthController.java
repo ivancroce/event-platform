@@ -4,8 +4,8 @@ import ivancroce.event_platform.entities.User;
 import ivancroce.event_platform.exceptions.ValidationException;
 import ivancroce.event_platform.payloads.LoginDTO;
 import ivancroce.event_platform.payloads.LoginRespDTO;
-import ivancroce.event_platform.payloads.NewUserDTO;
-import ivancroce.event_platform.payloads.NewUserRespDTO;
+import ivancroce.event_platform.payloads.UserDTO;
+import ivancroce.event_platform.payloads.UserRespDTO;
 import ivancroce.event_platform.services.AuthService;
 import ivancroce.event_platform.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public NewUserRespDTO createUser(@RequestBody @Validated NewUserDTO payload, BindingResult validationResult) {
+    public UserRespDTO createUser(@RequestBody @Validated UserDTO payload, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
             validationResult.getAllErrors().forEach(System.out::println);
             throw new ValidationException(validationResult.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
         } else {
             User newUser = this.userService.saveUser(payload);
-            return new NewUserRespDTO(newUser.getId());
+            return new UserRespDTO(newUser.getId());
         }
     }
 
