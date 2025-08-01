@@ -23,7 +23,7 @@ public class UserController {
     public User getOwnProfile(@AuthenticationPrincipal User authenticatedUser) {
         return authenticatedUser;
     }
-    
+
     // ========================================== ADMIN ENDPOINTS ==========================================
 
     @GetMapping
@@ -35,17 +35,4 @@ public class UserController {
     ) {
         return this.userService.findAll(page, size, sortBy);
     }
-
-  /*  @PostMapping("/register")
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    @ResponseStatus(HttpStatus.CREATED)
-    public NewUserRespDTO createUser(@RequestBody @Validated NewUserDTO payload, BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            validationResult.getAllErrors().forEach(System.out::println);
-            throw new ValidationException(validationResult.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
-        } else {
-            User newUser = this.userService.saveUser(payload);
-            return new NewUserRespDTO(newUser.getId());
-        }
-    }*/
 }
