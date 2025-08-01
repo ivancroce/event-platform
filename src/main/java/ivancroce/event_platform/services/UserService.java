@@ -49,4 +49,8 @@ public class UserService {
     public User findById(UUID userId) {
         return this.userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId));
     }
+
+    public User findByUsername(String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("The employee with username '" + username + "' was not found."));
+    }
 }

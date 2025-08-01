@@ -2,8 +2,11 @@ package ivancroce.event_platform.controllers;
 
 import ivancroce.event_platform.entities.User;
 import ivancroce.event_platform.exceptions.ValidationException;
+import ivancroce.event_platform.payloads.LoginDTO;
+import ivancroce.event_platform.payloads.LoginRespDTO;
 import ivancroce.event_platform.payloads.NewUserDTO;
 import ivancroce.event_platform.payloads.NewUserRespDTO;
+import ivancroce.event_platform.services.AuthService;
 import ivancroce.event_platform.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +20,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthService authService;
+
     @PostMapping("/register")
-    // @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public NewUserRespDTO createUser(@RequestBody @Validated NewUserDTO payload, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
@@ -28,5 +33,11 @@ public class AuthController {
             User newUser = this.userService.saveUser(payload);
             return new NewUserRespDTO(newUser.getId());
         }
+    }
+
+    @PostMapping("/login")
+    public LoginRespDTO login(@RequestBody LoginDTO payload) {
+        String token = authService.authenticateUserAndGenerateToken(payload);
+        return new LoginRespDTO(token);
     }
 }
