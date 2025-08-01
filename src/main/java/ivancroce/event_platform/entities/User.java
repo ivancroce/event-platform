@@ -1,9 +1,15 @@
 package ivancroce.event_platform.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ivancroce.event_platform.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +18,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @ToString
-public class User {
+@JsonIgnoreProperties({"password", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+public class User implements UserDetails {
     @Id
     @GeneratedValue
     @Setter(AccessLevel.NONE)
@@ -36,5 +43,10 @@ public class User {
         this.password = password;
         this.fullName = fullName;
         this.role = Role.USER;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 }
