@@ -29,7 +29,7 @@ public class Booking {
     @Column(nullable = false, name = "booking date")
     private LocalDate bookingDate;
 
-    public Booking(User user, Event event, LocalDate bookingDate) {
+    public Booking(User user, Event event) {
         this.user = user;
         this.event = event;
         this.bookingDate = LocalDate.now();
