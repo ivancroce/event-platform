@@ -2,13 +2,16 @@ package ivancroce.event_platform.controllers;
 
 import ivancroce.event_platform.entities.Event;
 import ivancroce.event_platform.entities.User;
+import ivancroce.event_platform.exceptions.ValidationException;
 import ivancroce.event_platform.payloads.EventDTO;
+import ivancroce.event_platform.payloads.EventRespDTO;
 import ivancroce.event_platform.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +26,17 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ORGANIZER')")
-    public Event createEvent(@RequestBody @Validated EventDTO payload,
-                             @AuthenticationPrincipal User currentUser) {
-        return eventService.createEvent(payload, currentUser);
+    @PreAuthorize("hasAnyAuthority('ORGANIZER', 'ADMIN')")
+    public EventRespDTO createEvent(@RequestBody @Validated EventDTO payload,
+                                    BindingResult validationResult,
+                                    @AuthenticationPrincipal User currentUser) {
+        if (validationResult.hasErrors()) {
+            validationResult.getAllErrors().forEach(System.out::println);
+            throw new ValidationException(validationResult.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        } else {
+            Event newEvent = this.eventService.createEvent(payload, currentUser);
+            return new EventRespDTO(newEvent.getId());
+        }
     }
 
     @GetMapping

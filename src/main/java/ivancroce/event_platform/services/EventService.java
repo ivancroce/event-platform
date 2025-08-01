@@ -6,6 +6,7 @@ import ivancroce.event_platform.enums.Role;
 import ivancroce.event_platform.exceptions.NotFoundException;
 import ivancroce.event_platform.payloads.EventDTO;
 import ivancroce.event_platform.repositories.EventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class EventService {
     @Autowired
     private EventRepository eventRepository;
@@ -32,7 +34,10 @@ public class EventService {
         newEvent.setAvailableSeats(payload.totalSeats());
         newEvent.setOrganizer(organizer);
 
-        return eventRepository.save(newEvent);
+        Event savedEvent = this.eventRepository.save(newEvent);
+
+        log.info("The Event with ID '" + savedEvent.getId() + "' was created.");
+        return savedEvent;
     }
 
     public Page<Event> findAllEvents(int page, int size, String sortBy) {
