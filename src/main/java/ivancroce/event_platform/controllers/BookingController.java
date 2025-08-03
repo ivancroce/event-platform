@@ -5,6 +5,7 @@ import ivancroce.event_platform.entities.User;
 import ivancroce.event_platform.payloads.BookingRespDTO;
 import ivancroce.event_platform.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,5 +28,16 @@ public class BookingController {
             @AuthenticationPrincipal User currentUser) {
         Booking newBooking = bookingService.createBooking(eventId, currentUser);
         return new BookingRespDTO(newBooking.getId());
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAuthority('USER')")
+    public Page<Booking> getMyBookings(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "bookingDate") String sortBy
+    ) {
+        return bookingService.findMyBookings(currentUser, page, size, sortBy);
     }
 }

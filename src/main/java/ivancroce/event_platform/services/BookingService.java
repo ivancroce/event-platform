@@ -8,6 +8,10 @@ import ivancroce.event_platform.repositories.BookingRepository;
 import ivancroce.event_platform.repositories.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -45,5 +49,11 @@ public class BookingService {
         log.info("New booking with ID " + savedBooking.getId() + " created for user " + currentUser.getUsername());
 
         return savedBooking;
+    }
+
+    public Page<Booking> findMyBookings(User currentUser, int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return bookingRepository.findByUser(currentUser, pageable);
     }
 }
