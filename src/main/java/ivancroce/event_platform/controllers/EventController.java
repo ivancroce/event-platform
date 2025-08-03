@@ -65,6 +65,6 @@ public class EventController {
     @PreAuthorize("hasAnyAuthority('ORGANIZER', 'ADMIN')")
     public void deleteEvent(@PathVariable UUID eventId,
                             @AuthenticationPrincipal User currentUser) {
-        eventService.deleteEvent(eventId, currentUser);
+        eventService.deleteMyEvent(eventId, currentUser);
     }
 }

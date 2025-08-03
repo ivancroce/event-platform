@@ -40,4 +40,11 @@ public class BookingController {
     ) {
         return bookingService.findMyBookings(currentUser, page, size, sortBy);
     }
+
+    @DeleteMapping("/{bookingId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public void deleteBooking(@PathVariable UUID bookingId, @AuthenticationPrincipal User currentUser) {
+        bookingService.deleteMyBooking(bookingId, currentUser);
+    }
 }

@@ -71,7 +71,7 @@ public class EventService {
         }
     }
 
-    public void deleteEvent(UUID eventId, User currentUser) {
+    public void deleteMyEvent(UUID eventId, User currentUser) {
         Event foundEvent = this.findById(eventId);
 
         boolean isOwner = foundEvent.getOrganizer().getId().equals(currentUser.getId());
@@ -79,6 +79,7 @@ public class EventService {
 
         if (isOwner || isAdmin) {
             eventRepository.delete(foundEvent);
+            log.info("Event with ID '" + eventId + "' was successfully cancelled.");
         } else {
             throw new AuthorizationDeniedException("You are not authorized to delete this event.");
         }
