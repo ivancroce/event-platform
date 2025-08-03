@@ -70,9 +70,13 @@ public class BookingService {
 
             Event event = bookingToDelete.getEvent();
 
-            event.setAvailableSeats(event.getAvailableSeats() + 1);
-
-            this.eventRepository.save(event);
+            // to ensure we don't make available seats > total seats, for example editing them from the db
+            if (event.getAvailableSeats() < event.getTotalSeats()) {
+                event.setAvailableSeats(event.getAvailableSeats() + 1);
+                this.eventRepository.save(event);
+            } else {
+                log.info("Attempted to cancel a booking for a full event, but available seats were already at maximum. Booking ID: " + bookingId + ", Event ID: " + event.getId());
+            }
 
             bookingRepository.delete(bookingToDelete);
             log.info("Booking with ID '" + bookingId + "' was successfully cancelled.");
